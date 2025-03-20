@@ -1,0 +1,37 @@
+services:
+  my-web-server:                            # 서비스명
+    build: .                                # Dockerfile 기반으로 빌드한 이미지를 사용함 (compose 파일 기준의 경로)
+    container_name: docker-example-server   # 컨테이너명
+    image: docker-example-image             # 이미지명
+    ports:                                  # Host Port : Container Port
+      - "8080:8080"
+    depends_on:                             # Application 구동순서 체크
+      my-database:
+        condition: service_healthy
+      my-cache-server:
+        condition: service_healthy
+  # docker run --name docker-example-server -p 80:80 docker-example-image
+
+  my-database:
+    container_name: my-sql-server
+    image: mysql
+    environment:
+      MYSQL_DATABASE: mydb
+      MYSQL_ROOT_PASSWORD: moon
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping"]
+      interval: 5s
+      retries: 10
+
+  my-cache-server:
+    image: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10

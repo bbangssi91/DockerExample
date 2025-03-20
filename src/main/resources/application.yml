@@ -1,1 +1,12 @@
-spring.application.name=DockerExample
+spring:
+  application:
+    name: DockerExample
+  datasource:
+    url: jdbc:mysql://my-database:3306/mydb           # Container 마다 고유한 Port를 가짐
+    username: root
+    password: moon
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: my-cache-server
+      port: 6379
